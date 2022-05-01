@@ -1,0 +1,31 @@
+:root {
+	--space: clamp(12px, 2vw, 36px);
+}
+
+body {
+	display: grid;
+	place-items: center;
+	height: 100vh;
+	font-family: sans-serif;
+}
+
+#board {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(3, 1fr);
+	gap: var(--space);
+	background: black;
+	width: clamp(350px, 60vw, 800px);
+	height: clamp(350px, 60vw, 800px);
+	padding: var(--space);
+	border-radius: calc(var(--space) * 1.5);
+}
+
+.square {
+	background: white;
+	border-radius: var(--space);
+	display: grid;
+	place-content: center;
+	font-size: clamp(48px, 8vw + 1rem, 124px);
+	font-weight: bold;
+}
