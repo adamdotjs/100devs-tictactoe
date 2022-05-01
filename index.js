@@ -1,25 +1,17 @@
-// Write a program that lets users play a game of tic-tac-toe;
-// You should do this as OOP.
-// Player one is X, player two is O
-// If player one makes a move, mark the square with an X and switch the active player to player two
-// If player two makes a move, do the opposite
-// // Check the moves against all possible win conditions. If either player has a matching win condition, the game is over and the winner should be displayed in the DOM
-class Player {
-	constructor(mark) {
-		this.mark = mark;
-	}
-}
+// Player initializes game as marker X
+// Computer goes next as marker O
+// Apply marker class to player input, and then choose a random tile for computer
+// Player or computer must match 3 markers in a row to win the game
+// Once win condition is met, alert who won
 
-const playerOne = new Player('x');
-const playerTwo = new Player('o');
+const gameBoard = document.querySelector('#board');
+const tiles = [...gameBoard.querySelectorAll('.tile')];
+const currentGameMoves = [null, null, null, null, null, null, null, null, null];
+const playerMark = 'X';
+const computerMark = 'O';
+let currentPlayer = playerMark;
 
-let currentPlayer = playerOne;
-
-function handlePlayer() {
-	currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
-}
-
-const winConditions = new Map([
+const winConditions = [
 	[0, 1, 2],
 	[3, 4, 5],
 	[6, 7, 8],
@@ -28,13 +20,64 @@ const winConditions = new Map([
 	[2, 5, 8],
 	[0, 4, 8],
 	[3, 4, 6],
-]);
+];
 
-document.querySelector('#board').addEventListener('click', (e) => {
-	e.target.innerText = currentPlayer === 1 ? 'X' : 'O';
-	handlePlayer();
+const checkForWin = () => {
+	let gameWon = false;
+	for (let i = 0; i < winConditions.length; i++) {
+		let winCondition = winConditions[i];
+		let a = currentGameMoves[winCondition[0]];
+		let b = currentGameMoves[winCondition[1]];
+		let c = currentGameMoves[winCondition[2]];
+
+		if (a && b && c) {
+			if (a === b && b === c) {
+				gameWon = true;
+			}
+		}
+	}
+	if (gameWon) {
+		alert('Game over!');
+		handleReset();
+	}
+};
+
+const handlePlayerMove = (e) => {
+	const i = e.target.dataset.id;
+	if (!currentGameMoves[i] && currentPlayer === playerMark) {
+		currentGameMoves[i] = playerMark;
+		tiles[i].textContent = playerMark;
+		currentPlayer = computerMark;
+	}
+	checkForWin();
+};
+
+const handleComputerMove = () => {
+	let i = Math.floor(Math.random() * currentGameMoves.length);
+
+	if (currentPlayer === computerMark) {
+		if (!currentGameMoves[i]) {
+			currentGameMoves[i] = computerMark;
+			tiles[i].innerText = computerMark;
+			currentPlayer = playerMark;
+		} else {
+			handleComputerMove();
+		}
+	}
+	checkForWin();
+};
+
+gameBoard.addEventListener('click', (e) => {
+	if (e.target.classList.contains('tile') && e.target.textContent === '') {
+		handlePlayerMove(e);
+		setTimeout(() => handleComputerMove(), 800);
+	}
 });
 
-function checkForWin() {
-	let roundWon = false;
-}
+const handleReset = () => {
+	tiles.forEach((tile) => (tile.textContent = ''));
+	currentGameMoves.forEach((_, i) => (currentGameMoves[i] = null));
+	currentPlayer = playerMark;
+};
+
+document.querySelector('#reset-btn').addEventListener('click', () => handleReset());

@@ -21,7 +21,7 @@ body {
 	border-radius: calc(var(--space) * 1.5);
 }
 
-.square {
+.tile {
 	background: white;
 	border-radius: var(--space);
 	display: grid;
